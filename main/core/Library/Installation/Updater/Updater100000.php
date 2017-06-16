@@ -15,6 +15,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\CoreBundle\DataFixtures\PostInstall\Data\PostLoadRolesData;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Updater100000 extends Updater
@@ -23,7 +24,7 @@ class Updater100000 extends Updater
     protected $logger;
     private $om;
 
-    public function __construct(ContainerInterface $container, $logger)
+    public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->container = $container;
         $this->logger = $logger;
@@ -37,7 +38,7 @@ class Updater100000 extends Updater
         $this->setResourceNodeProperties();
         $this->rebuildMaskAndMenus();
         $this->enableWorkspaceList();
-        $this->addIconSet();
+        $this->moveUploadsDirectory();
     }
 
     public function enableWorkspaceList()
@@ -114,20 +115,32 @@ class Updater100000 extends Updater
 
     public function moveUploadsDirectory()
     {
+        $this->log('Moving file storage directories...');
         $toMove = ['uploads', 'themes'];
 
         $fs = new FileSystem();
 
         foreach ($toMove as $directory) {
-            $fs->move(
-                $this->container->getParameter('claroline.param.web_dir').$directory,
-                $this->container->getParameter('claroline.param.data_web_dir').$directory
-            );
+            if ($this->logger) {
+                $this->log('Moving '.$directory.'...');
+            }
 
-            $fs->remove($this->container->getParameter('claroline.param.uploads_directory'));
+            try {
+                $fs->rename(
+                  $this->container->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$directory,
+                  $this->container->getParameter('claroline.param.data_web_dir').DIRECTORY_SEPARATOR.$directory
+              );
+            } catch (IOException $e) {
+                if ($this->logger) {
+                    $this->log('Directory '.$this->container->getParameter('claroline.param.data_web_dir').DIRECTORY_SEPARATOR.$directory.' already exists...');
+                }
+            }
+
+            $fs->remove($this->container->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$directory);
+
             $fs->symlink(
-                $this->container->getParameter('claroline.param.data_web_dir').$directory,
-                $this->container->getParameter('claroline.param.web_dir').$directory
+                $this->container->getParameter('claroline.param.data_web_dir').DIRECTORY_SEPARATOR.$directory,
+                $this->container->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$directory
             );
         }
     }

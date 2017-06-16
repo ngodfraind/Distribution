@@ -16,6 +16,7 @@ use JangoBrick\SVG\Nodes\Embedded\SVGImageElement;
 use JangoBrick\SVG\SVGImage;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @DI\Service("claroline.utilities.thumbnail_creator")
@@ -28,15 +29,18 @@ class ThumbnailCreator
     private $isFfmpegLoaded;
     private $ut;
     private $fs;
+    private $fileUtilities;
+    private $fu;
 
     /**
      * @DI\InjectParams({
-     *     "kernelRootDir" = @DI\Inject("%kernel.root_dir%"),
+     *     "kernelRootDir"      = @DI\Inject("%kernel.root_dir%"),
      *     "thumbnailDirectory" = @DI\Inject("%claroline.param.thumbnails_directory%"),
-     *     "ut"       = @DI\Inject("claroline.utilities.misc")
+     *     "ut"                 = @DI\Inject("claroline.utilities.misc"),
+     *     "fileUtilities"      = @DI\Inject("claroline.utilities.file")
      * })
      */
-    public function __construct($kernelRootDir, $thumbnailDirectory, ClaroUtilities $ut)
+    public function __construct($kernelRootDir, $thumbnailDirectory, ClaroUtilities $ut, FileUtilities $fileUtilities)
     {
         $ds = DIRECTORY_SEPARATOR;
         $this->webDir = "{$kernelRootDir}{$ds}..{$ds}web";
@@ -45,6 +49,7 @@ class ThumbnailCreator
         $this->isFfmpegLoaded = extension_loaded('ffmpeg');
         $this->ut = $ut;
         $this->fs = new FileSystem();
+        $this->fu = $fileUtilities;
     }
 
     /**
@@ -80,6 +85,11 @@ class ThumbnailCreator
             $this->resize($newWidth, $newHeight, $image, $destinationPath);
 
             return $destinationPath;
+            //$fileEntity = $fu->createFile(new File($destinationPath));
+            //var_dump($fileEntity->getFileName());
+            //unlink($destinationPath);
+            //createFile
+            return $fileEntity->getFilename();
         }
 
         $exception = new ExtensionNotSupportedException();
@@ -128,6 +138,11 @@ class ThumbnailCreator
         imagedestroy($srcImg);
 
         return $destinationPath;
+        //$fileEntity = $fu->createFile(new File($destinationPath));
+        //var_dump($fileEntity->getFileName());
+        //unlink($destinationPath);
+        //createFile
+        return $fileEntity->getFilename();
     }
 
     /**
