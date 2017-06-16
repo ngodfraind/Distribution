@@ -19,7 +19,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\CursusBundle\Repository\SessionEventSetRepository")
  * @ORM\Table(
  *     name="claro_cursusbundle_session_event_set",
  *     uniqueConstraints={
