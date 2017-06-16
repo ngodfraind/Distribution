@@ -8,11 +8,7 @@ plugin:
   resource_actions:
     - name: tag_action
       is_form: true
-      is_async: true
-      is_custom: false
-      group: core
-      class: changeme
-      value: administrate
+      is_custom: true
 
   widgets:
     - name: claroline_tag_resources_widget
