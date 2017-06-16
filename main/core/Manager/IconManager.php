@@ -17,6 +17,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Library\Utilities\ThumbnailCreator;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\ResourceIconRepository;
@@ -51,6 +52,8 @@ class IconManager
     private $basepath;
     /** @var string */
     private $iconSetRepo;
+    /** @var FileUtilities */
+    private $fu;
 
     /**
      * @DI\InjectParams({
@@ -60,7 +63,9 @@ class IconManager
      *     "rootDir"  = @DI\Inject("%kernel.root_dir%"),
      *     "ut"       = @DI\Inject("claroline.utilities.misc"),
      *     "om"       = @DI\Inject("claroline.persistence.object_manager"),
-     *     "basepath" = @DI\Inject("%claroline.param.relative_thumbnail_base_path%")
+     *     "basepath" = @DI\Inject("%claroline.param.relative_thumbnail_base_path%"),
+     *     "fu"       = @DI\Inject("claroline.utilities.file"),
+     *     "pdir"     = @DI\Inject("%claroline.param.public_files_directory%")
      * })
      */
     public function __construct(
@@ -70,7 +75,9 @@ class IconManager
         $rootDir,
         ClaroUtilities $ut,
         ObjectManager $om,
-        $basepath
+        $basepath,
+        FileUtilities $fu,
+        $pdir
     ) {
         $this->creator = $creator;
         $this->repo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceIcon');
@@ -81,6 +88,8 @@ class IconManager
         $this->ut = $ut;
         $this->om = $om;
         $this->basepath = $basepath;
+        $this->fu = $fu;
+        $this->pdir = $pdir;
     }
 
     /**
@@ -105,17 +114,7 @@ class IconManager
             );
 
             if ($thumbnailPath !== null) {
-                $thumbnailName = pathinfo($thumbnailPath, PATHINFO_BASENAME);
-
-                if (is_null($workspace)) {
-                    $relativeUrl = $this->basepath."/{$thumbnailName}";
-                } else {
-                    $relativeUrl = $this->basepath.
-                        $ds.
-                        $workspace->getCode().
-                        $ds.
-                        $thumbnailName;
-                }
+                $relativeUrl = 'data'.$ds.str_replace($this->pdir, '', $thumbnailPath);
                 $icon = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
                 $icon->setMimeType('custom');
                 $icon->setRelativeUrl($relativeUrl);
@@ -252,9 +251,11 @@ class IconManager
                 @mkdir($prefix);
             }
         }
-        $newPath = $prefix.$ds.$this->ut->generateGuid().'.png';
+
+        $newPath = $this->pdir.$ds.$this->fu->getActiveDirectoryName().$ds.$this->ut->generateGuid().'.png';
 
         $thumbnailPath = null;
+
         if ($baseMime === 'video') {
             try {
                 $thumbnailPath = $this->creator->fromVideo($filePath, $newPath, 100, 100);
@@ -265,12 +266,12 @@ class IconManager
         }
 
         if ($baseMime === 'image') {
-            //try {
+            try {
                 $thumbnailPath = $this->creator->fromImage($filePath, $newPath, 100, 100);
-            //} catch (\Exception $e) {
-            //    $thumbnailPath = null;
+            } catch (\Exception $e) {
+                $thumbnailPath = null;
                 //error handling ? $thumbnailPath = null
-            //}
+            }
         }
 
         return $thumbnailPath;

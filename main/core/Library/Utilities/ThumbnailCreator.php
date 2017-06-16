@@ -85,11 +85,6 @@ class ThumbnailCreator
             $this->resize($newWidth, $newHeight, $image, $destinationPath);
 
             return $destinationPath;
-            //$fileEntity = $fu->createFile(new File($destinationPath));
-            //var_dump($fileEntity->getFileName());
-            //unlink($destinationPath);
-            //createFile
-            return $fileEntity->getFilename();
         }
 
         $exception = new ExtensionNotSupportedException();
@@ -138,11 +133,6 @@ class ThumbnailCreator
         imagedestroy($srcImg);
 
         return $destinationPath;
-        //$fileEntity = $fu->createFile(new File($destinationPath));
-        //var_dump($fileEntity->getFileName());
-        //unlink($destinationPath);
-        //createFile
-        return $fileEntity->getFilename();
     }
 
     /**
