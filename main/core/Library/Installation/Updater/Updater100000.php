@@ -15,6 +15,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\CoreBundle\DataFixtures\PostInstall\Data\PostLoadRolesData;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Updater100000 extends Updater
 {
@@ -115,5 +116,25 @@ class Updater100000 extends Updater
         $this->container->get('claroline.plugin.installer')->setLogger($this->logger);
         $this->container->get('claroline.plugin.installer')->updateAllConfigurations();
         $this->log('On older plateforms, resource permissions might have changed !');
+    }
+
+    public function moveUploadsDirectory()
+    {
+        $toMove = ['uploads', 'themes'];
+
+        $fs = new FileSystem();
+
+        foreach ($toMove as $directory) {
+            $fs->move(
+                $this->container->getParameter('claroline.param.web_dir').$directory,
+                $this->container->getParameter('claroline.param.data_web_dir').$directory
+            );
+
+            $fs->remove($this->container->getParameter('claroline.param.uploads_directory'));
+            $fs->symlink(
+                $this->container->getParameter('claroline.param.data_web_dir').$directory,
+                $this->container->getParameter('claroline.param.web_dir').$directory
+            );
+        }
     }
 }

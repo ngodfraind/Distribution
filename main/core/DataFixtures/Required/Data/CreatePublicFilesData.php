@@ -33,6 +33,7 @@ class CreatePublicFilesData implements RequiredFixture
             $fileSystem->mkdir($publicFilesDir, 0775);
             $fileSystem->chmod($publicFilesDir, 0775, 0000, true);
         }
+
         if (!$fileSystem->exists($dataWebDir)) {
             $fileSystem->symlink($publicFilesDir, $dataWebDir);
         }
