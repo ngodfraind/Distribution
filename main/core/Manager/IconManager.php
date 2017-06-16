@@ -265,12 +265,12 @@ class IconManager
         }
 
         if ($baseMime === 'image') {
-            try {
+            //try {
                 $thumbnailPath = $this->creator->fromImage($filePath, $newPath, 100, 100);
-            } catch (\Exception $e) {
-                $thumbnailPath = null;
+            //} catch (\Exception $e) {
+            //    $thumbnailPath = null;
                 //error handling ? $thumbnailPath = null
-            }
+            //}
         }
 
         return $thumbnailPath;
