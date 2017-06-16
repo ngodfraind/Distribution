@@ -134,7 +134,6 @@ class PlatformInstaller
     {
         $this->log('Creating public sub-directories...');
         $directories = [
-            $this->container->getParameter('claroline.param.thumbnails_directory'),
             $this->container->getParameter('claroline.param.uploads_directory'),
             $this->container->getParameter('claroline.param.uploads_directory').'/badges',
             $this->container->getParameter('claroline.param.uploads_directory').'/logos',

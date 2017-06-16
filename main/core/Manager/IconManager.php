@@ -242,16 +242,6 @@ class IconManager
     {
         $ds = DIRECTORY_SEPARATOR;
 
-        if (is_null($workspace)) {
-            $prefix = $this->thumbDir;
-        } else {
-            $prefix = $this->thumbDir.$ds.$workspace->getCode();
-
-            if (!is_dir($prefix)) {
-                @mkdir($prefix);
-            }
-        }
-
         $newPath = $this->pdir.$ds.$this->fu->getActiveDirectoryName().$ds.$this->ut->generateGuid().'.png';
 
         $thumbnailPath = null;
@@ -292,8 +282,8 @@ class IconManager
                 $this->om->remove($shortcut);
                 $this->om->remove($icon);
                 $this->om->flush();
-                $this->removeImageFromThumbDir($icon, $workspace);
-                $this->removeImageFromThumbDir($icon->getShortcutIcon(), $workspace);
+                $this->removeImageFromThumbDir($icon);
+                $this->removeImageFromThumbDir($icon->getShortcutIcon());
             }
         }
     }
@@ -336,22 +326,12 @@ class IconManager
     /**
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceIcon $icon
      */
-    public function removeImageFromThumbDir(ResourceIcon $icon, Workspace $workspace = null)
+    public function removeImageFromThumbDir(ResourceIcon $icon)
     {
-        if (preg_match('#^thumbnails#', $icon->getRelativeUrl())) {
-            $pathName = $this->rootDir.'/../web/'.$icon->getRelativeUrl();
+        $pathName = $this->rootDir.'/../web/'.$icon->getRelativeUrl();
 
-            if (file_exists($pathName)) {
-                unlink($pathName);
-
-                if (!is_null($workspace)) {
-                    $dir = $this->thumbDir.DIRECTORY_SEPARATOR.$workspace->getCode();
-
-                    if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
-                        rmdir($dir);
-                    }
-                }
-            }
+        if (file_exists($pathName)) {
+            unlink($pathName);
         }
     }
 

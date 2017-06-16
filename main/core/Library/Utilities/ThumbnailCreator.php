@@ -171,6 +171,7 @@ class ThumbnailCreator
         imagedestroy($dstImg);
     }
 
+    //TODO REMOVE thumbnail directory
     public function shortcutThumbnail(
         $srcImg,
         Workspace $workspace = null,
