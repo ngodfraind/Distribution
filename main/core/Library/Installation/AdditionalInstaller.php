@@ -278,6 +278,23 @@ class AdditionalInstaller extends BaseInstaller
         $this->log('Updating resource icons...');
         $this->container->get('claroline.manager.icon_set_manager')->setLogger($this->logger);
         $this->container->get('claroline.manager.icon_set_manager')->addDefaultIconSets();
+
+        $fileSystem = $this->container->get('filesystem');
+        $publicFilesDir = $this->container->getParameter('claroline.param.public_files_directory');
+        $dataWebDir = $this->container->getParameter('claroline.param.data_web_dir');
+
+        if (!$fileSystem->exists($publicFilesDir)) {
+            $fileSystem->mkdir($publicFilesDir, 0775);
+            $fileSystem->chmod($publicFilesDir, 0775, 0000, true);
+        }
+
+        if (!$fileSystem->exists($dataWebDir)) {
+            $fileSystem->symlink($publicFilesDir, $dataWebDir);
+        }
+
+        //when everything concerning files is done properly, these lines should be removed
+        $updater = new Updater\Updater100000($this->container);
+        $updater->moveUploadsDirectory();
     }
 
     private function setLocale()
