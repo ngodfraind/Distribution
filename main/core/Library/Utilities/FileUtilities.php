@@ -236,6 +236,12 @@ class FileUtilities
             }
         }
 
+        $newDir = $this->publicFilesDir.DIRECTORY_SEPARATOR.$activeDirectoryName;
+
+        if (!$this->fileSystem->exists($newDir)) {
+            $this->fileSystem->mkdir($newDir);
+        }
+
         return $activeDirectoryName;
     }
 
