@@ -28,6 +28,14 @@ class ResourceIcon
     protected $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column()
+     * @ORM\Column(nullable=true)
+     */
+    protected $uuid;
+
+    /**
      * @ORM\Column()
      */
     protected $mimeType;
@@ -41,6 +49,7 @@ class ResourceIcon
      * @ORM\Column(name="relative_url", nullable=true)
      *
      * The url from the /web folder.
+     * This is a "legacy parameter". Now we use the PublicFileUse entity.
      */
     protected $relativeUrl;
 
@@ -101,5 +110,15 @@ class ResourceIcon
     public function getRelativeUrl()
     {
         return $this->relativeUrl;
+    }
+
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 }

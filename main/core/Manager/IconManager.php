@@ -65,7 +65,8 @@ class IconManager
      *     "om"       = @DI\Inject("claroline.persistence.object_manager"),
      *     "basepath" = @DI\Inject("%claroline.param.relative_thumbnail_base_path%"),
      *     "fu"       = @DI\Inject("claroline.utilities.file"),
-     *     "pdir"     = @DI\Inject("%claroline.param.public_files_directory%")
+     *     "pdir"     = @DI\Inject("%claroline.param.public_files_directory%"),
+     *     "webdir"   = @DI\Inject("%claroline.param.web_directory%"),
      * })
      */
     public function __construct(
@@ -77,7 +78,8 @@ class IconManager
         ObjectManager $om,
         $basepath,
         FileUtilities $fu,
-        $pdir
+        $pdir,
+        $webdir
     ) {
         $this->creator = $creator;
         $this->repo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceIcon');
@@ -90,6 +92,7 @@ class IconManager
         $this->basepath = $basepath;
         $this->fu = $fu;
         $this->pdir = $pdir;
+        $this->webdir = $webdir;
     }
 
     /**
@@ -107,21 +110,31 @@ class IconManager
         // if video or img => generate the thumbnail, otherwise find an existing one.
         if (($mimeElements[0] === 'video' || $mimeElements[0] === 'image')) {
             $this->om->startFlushSuite();
-            $thumbnailPath = $this->createFromFile(
+            $publicFile = $this->createFromFile(
                 $this->fileDir.$ds.$resource->getHashName(),
                 $mimeElements[0],
                 $workspace
             );
 
+            $thumbnailPath = $this->webdir.$ds.$publicFile->getUrl();
+
             if ($thumbnailPath !== null) {
-                $relativeUrl = 'data'.$ds.str_replace($this->pdir, '', $thumbnailPath);
+                $relativeUrl = str_replace($this->webdir, '', $thumbnailPath);
                 $icon = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
                 $icon->setMimeType('custom');
                 $icon->setRelativeUrl($relativeUrl);
                 $icon->setShortcut(false);
+                $icon->setUuid(uniqid('', true));
                 $this->om->persist($icon);
                 $this->createShortcutIcon($icon, $workspace);
                 $this->om->endFlushSuite();
+
+                $this->fu->createFileUse(
+                  $publicFile,
+                  get_class($icon),
+                  $icon->getUuid(),
+                  'resource-thumbnail'
+                );
 
                 return $icon;
             }
@@ -180,6 +193,7 @@ class IconManager
         $shortcutIcon->setRelativeUrl($relativeUrl);
         $shortcutIcon->setMimeType($icon->getMimeType());
         $shortcutIcon->setShortcut(true);
+        $shortcutIcon->setUuid(uniqid('', true));
         $icon->setShortcutIcon($shortcutIcon);
         $shortcutIcon->setShortcutIcon($shortcutIcon);
         $this->om->persist($icon);
@@ -264,7 +278,7 @@ class IconManager
             }
         }
 
-        return $thumbnailPath;
+        return $this->fu->createFile(new File($newPath));
     }
 
     /**
@@ -330,7 +344,7 @@ class IconManager
     {
         $pathName = $this->rootDir.'/../web/'.$icon->getRelativeUrl();
 
-        if (file_exists($pathName)) {
+        if (is_file($pathName) && file_exists($pathName)) {
             unlink($pathName);
         }
     }
