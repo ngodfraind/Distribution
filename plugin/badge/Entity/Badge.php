@@ -54,6 +54,11 @@ class Badge extends Rulable
     protected $id;
 
     /**
+     * @ORM\Column()
+     */
+    protected $uuid;
+
+    /**
      * @var int
      *
      * @ORM\Column(type="smallint", nullable=false)
@@ -721,7 +726,15 @@ class Badge extends Rulable
      */
     public function getWebPath()
     {
-        return (null === $this->imagePath) ? null : self::getUploadDir().DIRECTORY_SEPARATOR.$this->imagePath;
+        if ($this->imagePath) {
+            //legacy
+          if (file_exists(self::getUploadDir().DIRECTORY_SEPARATOR.$this->imagePath)) {
+              return self::getUploadDir().DIRECTORY_SEPARATOR.$this->imagePath;
+            //new and much better (right ? :))
+          } else {
+              return $this->imagePath;
+          }
+        }
     }
 
     /**
@@ -793,6 +806,16 @@ class Badge extends Rulable
         }
 
         return $restriction;
+    }
+
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     public function __clone()
