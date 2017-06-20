@@ -1142,19 +1142,14 @@ class UserManager
      */
     public function uploadAvatar(User $user)
     {
-        if (null !== $user->getPictureFile()) {
-            if (!is_writable($pictureDir = $this->uploadsDirectory.'/pictures/')) {
-                throw new \Exception("{$pictureDir} is not writable");
-            }
-
-            $user->setPicture(
-                sha1(
-                    $user->getPictureFile()->getClientOriginalName()
-                    .$user->getId())
-                    .'.'
-                    .$user->getPictureFile()->guessExtension()
-            );
-            $user->getPictureFile()->move($pictureDir, $user->getPicture());
+        if ($user->getPictureFile()) {
+            $file = $user->getPictureFile();
+            $publicFile = $this->fu->createFile($file, $file->getBasename());
+            $fileUse = $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+            //../.. for legacy compatibility
+            $user->setPicture('../../'.$publicFile->getUrl());
+            $this->objectManager->persist($user);
+            $this->objectManager->flush();
         }
     }
 
