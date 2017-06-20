@@ -51,7 +51,7 @@ class SessionEventSet
      *     inversedBy="events"
      * )
      * @ORM\JoinColumn(name="session_id", nullable=true, onDelete="CASCADE")
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus"})
      */
     protected $session;
 
@@ -68,7 +68,7 @@ class SessionEventSet
      *     mappedBy="eventSet"
      * )
      * @ORM\OrderBy({"startDate" = "ASC"})
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus"})
      */
     protected $events;
 

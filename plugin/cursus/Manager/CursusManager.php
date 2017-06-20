@@ -1519,7 +1519,8 @@ class CursusManager
         array $tutors = [],
         $registrationType = CourseSession::REGISTRATION_AUTO,
         $maxUsers = null,
-        $type = SessionEvent::TYPE_NONE
+        $type = SessionEvent::TYPE_NONE,
+        SessionEventSet $eventSet = null
     ) {
         $eventName = is_null($name) ? $session->getName() : $name;
         $eventStartDate = is_null($startDate) ? $session->getStartDate() : $startDate;
@@ -1537,6 +1538,7 @@ class CursusManager
         $sessionEvent->setRegistrationType($registrationType);
         $sessionEvent->setMaxUsers($maxUsers);
         $sessionEvent->setType($type);
+        $sessionEvent->setEventSet($eventSet);
 
         foreach ($tutors as $tutor) {
             $sessionEvent->addTutor($tutor);
@@ -4848,6 +4850,12 @@ class CursusManager
         $this->persistSessionEventSet($set);
 
         return $set;
+    }
+
+    public function deleteSessionEventSet(SessionEventSet $sessionEventSet)
+    {
+        $this->om->remove($sessionEventSet);
+        $this->om->flush();
     }
 
     public function getSessionEventSet(CourseSession $session, $name)

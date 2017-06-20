@@ -138,6 +138,20 @@ class ManagerView extends Component {
     this.setState({modal: {fading: true, urlModal: null}})
   }
 
+  showEventSetForm(eventSet) {
+    this.setState({
+      modal: {
+        type: 'MODAL_EVENT_SET_FORM',
+        urlModal: null,
+        props: {
+          title: trans('session_event_set_edition', {}, 'cursus'),
+          eventSet: eventSet
+        },
+        fading: false
+      }
+    })
+  }
+
   render() {
     if (this.props.session) {
       return (
@@ -160,6 +174,16 @@ class ManagerView extends Component {
                 type: 'number',
                 label: t('registration'),
                 renderer: (rowData) => registrationTypes[rowData.registrationType]
+              },
+              {
+                name: 'eventSet',
+                type: 'string',
+                label: t('group'),
+                renderer: (rowData) => rowData.eventSet ?
+                  <a className="pointer-hand" onClick={() => this.showEventSetForm(rowData.eventSet)}>
+                    {rowData.eventSet['name']}
+                  </a> :
+                  ''
               }
             ]}
             actions={[

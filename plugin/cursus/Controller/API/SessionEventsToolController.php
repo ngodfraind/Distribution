@@ -21,6 +21,7 @@ use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventComment;
+use Claroline\CursusBundle\Entity\SessionEventSet;
 use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -144,6 +145,10 @@ class SessionEventsToolController extends Controller
                 $teachers = $this->userManager->getUsersByIds($teachersIds);
             }
         }
+        $eventSetName = $this->request->get('eventSet', false);
+        $eventSet = $eventSetName && $registrationType === CourseSession::REGISTRATION_PUBLIC ?
+            $this->cursusManager->getSessionEventSet($session, $eventSetName) :
+             null;
         $sessionEvent = $this->cursusManager->createSessionEvent(
             $session,
             $name,
@@ -156,7 +161,8 @@ class SessionEventsToolController extends Controller
             $teachers,
             $registrationType,
             $maxUsers,
-            $type
+            $type,
+            $eventSet
         );
         $serializedSessionEvent = $this->serializer->serialize(
             $sessionEvent,
@@ -213,8 +219,21 @@ class SessionEventsToolController extends Controller
         $maxUsers = $maxUsers !== false && $maxUsers !== '' ? intval($maxUsers) : null;
         $type = $this->request->get('type', false) !== false ? $this->request->get('type') : SessionEvent::TYPE_NONE;
         $locationExtra = $this->request->get('locationExtra', false) ? $this->request->get('locationExtra') : null;
+        $eventSetName = $this->request->get('eventSet', false);
         $sessionEvent->emptyTutors();
         $teachersParams = $this->request->get('teachers', false);
+
+        $sessionEvent->setName($name);
+        $sessionEvent->setDescription($description);
+        $sessionEvent->setStartDate($startDate);
+        $sessionEvent->setEndDate($endDate);
+        $sessionEvent->setRegistrationType($registrationType);
+        $sessionEvent->setMaxUsers($maxUsers);
+        $sessionEvent->setType($type);
+        $sessionEvent->setLocationExtra($locationExtra);
+        $locationId = intval($this->request->get('location', false));
+        $location = $locationId ? $this->locationManager->getLocationById($locationId) : null;
+        $sessionEvent->setLocation($location);
 
         if ($teachersParams) {
             $teachersIds = explode(',', $teachersParams);
@@ -230,17 +249,10 @@ class SessionEventsToolController extends Controller
                 }
             }
         }
-        $sessionEvent->setName($name);
-        $sessionEvent->setDescription($description);
-        $sessionEvent->setStartDate($startDate);
-        $sessionEvent->setEndDate($endDate);
-        $sessionEvent->setRegistrationType($registrationType);
-        $sessionEvent->setMaxUsers($maxUsers);
-        $sessionEvent->setType($type);
-        $sessionEvent->setLocationExtra($locationExtra);
-        $locationId = intval($this->request->get('location', false));
-        $location = $locationId ? $this->locationManager->getLocationById($locationId) : null;
-        $sessionEvent->setLocation($location);
+        $eventSet = $eventSetName && $registrationType === CourseSession::REGISTRATION_PUBLIC ?
+            $this->cursusManager->getSessionEventSet($sessionEvent->getSession(), $eventSetName) :
+             null;
+        $sessionEvent->setEventSet($eventSet);
         $this->cursusManager->persistSessionEvent($sessionEvent);
         $serializedSessionEvent = $this->serializer->serialize(
             $sessionEvent,
@@ -535,6 +547,50 @@ class SessionEventsToolController extends Controller
     {
         $this->checkToolAccess($sessionEventComment->getSessionEvent()->getSession()->getWorkspace(), 'edit');
         $this->cursusManager->deleteSessionEventComment($sessionEventComment);
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/cursus/session/event/set/{sessionEventSet}/edit",
+     *     name="claro_cursus_session_event_set_edit",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventSetEditAction(SessionEventSet $sessionEventSet)
+    {
+        $this->checkToolAccess($sessionEventSet->getSession()->getWorkspace(), 'edit');
+        $name = $this->request->get('name', false);
+        $limit = $this->request->get('limit', false);
+
+        if ($name) {
+            $sessionEventSet->setName($name);
+        }
+        if ($limit) {
+            $sessionEventSet->setLimit($limit);
+        }
+        $this->cursusManager->persistSessionEventSet($sessionEventSet);
+        $serializedSessionEventSet = $this->serializer->serialize(
+            $sessionEventSet,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedSessionEventSet, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/cursus/session/event/set/{sessionEventSet}/delete",
+     *     name="claro_cursus_session_event_set_delete",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventSetDeleteAction(SessionEventSet $sessionEventSet)
+    {
+        $this->checkToolAccess($sessionEventSet->getSession()->getWorkspace(), 'edit');
+        $this->cursusManager->deleteSessionEventSet($sessionEventSet);
 
         return new JsonResponse('success', 200);
     }

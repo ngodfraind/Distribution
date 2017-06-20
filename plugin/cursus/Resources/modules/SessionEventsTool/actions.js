@@ -98,6 +98,9 @@ actions.createSessionEvent = (sessionId, eventData) => {
     if (eventData['teachers'] !== undefined) {
       formData.append('teachers', eventData['teachers'])
     }
+    if (eventData['eventSet'] !== undefined) {
+      formData.append('eventSet', eventData['eventSet'])
+    }
     const type = eventData['isAgendaEvent'] ? 1 : 0
     formData.append('type', type)
 
@@ -146,6 +149,9 @@ actions.editSessionEvent = (eventId, eventData) => {
     }
     if (eventData['teachers'] !== undefined) {
       formData.append('teachers', eventData['teachers'])
+    }
+    if (eventData['eventSet'] !== undefined) {
+      formData.append('eventSet', eventData['eventSet'])
     }
     const type = eventData['isAgendaEvent'] ? 1 : 0
     formData.append('type', type)
@@ -448,6 +454,44 @@ actions.deleteEventComment = (eventCommentId) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.removeEventComment(eventCommentId))
+    }
+  }
+})
+
+actions.editEventSet = (eventSetId, eventSetData) => {
+  return (dispatch) => {
+    const formData = new FormData()
+
+    if (eventSetData['name'] !== undefined) {
+      formData.append('name', eventSetData['name'])
+    }
+    if (eventSetData['limit'] !== undefined) {
+      formData.append('limit', eventSetData['limit'])
+    }
+
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_cursus_session_event_set_edit', {sessionEventSet: eventSetId}),
+        request: {
+          method: 'POST',
+          body: formData
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.fetchSessionEvents())
+        }
+      }
+    })
+  }
+}
+
+actions.deleteEventSet = (eventSetId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_cursus_session_event_set_delete', {sessionEventSet: eventSetId}),
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.fetchSessionEvents())
     }
   }
 })

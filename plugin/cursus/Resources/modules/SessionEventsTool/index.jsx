@@ -13,6 +13,7 @@ import {EventFormModal} from './components/event-form-modal.jsx'
 import {EventRepeatFormModal} from './components/event-repeat-form-modal.jsx'
 import {SessionEventsToolLayout} from './components/session-events-tool-layout.jsx'
 import {EventCommentsModal} from './components/event-comments-modal.jsx'
+import {EventSetFormModal} from './components/event-set-form-modal.jsx'
 
 class SessionEventsTool {
   constructor(workspaceId, canEdit, sessions, events, eventsUsers) {
@@ -20,7 +21,8 @@ class SessionEventsTool {
       ['DELETE_MODAL', DeleteConfirmModal],
       ['MODAL_EVENT_FORM', EventFormModal],
       ['MODAL_EVENT_REPEAT_FORM', EventRepeatFormModal],
-      ['MODAL_EVENT_COMMENTS', EventCommentsModal]
+      ['MODAL_EVENT_COMMENTS', EventCommentsModal],
+      ['MODAL_EVENT_SET_FORM', EventSetFormModal]
     ])
     const sessionId = sessions.length === 1 ? sessions[0]['id'] : null
     this.viewMode = canEdit ? VIEW_MANAGER : VIEW_USER

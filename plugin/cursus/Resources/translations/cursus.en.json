@@ -287,6 +287,7 @@
     "session_event_registration_request": "Request for registration to session event %event_name% on %event_start_date% [%status%]",
     "session_event_registration_success_msg": "Hello,<br><br>\nYou have been registered to session event \"%event_name%\" on %event_start_date%.\n",
     "session_event_self_registration_message": "Are you sure you want to register to this session event ?",
+    "session_event_set_edition": "Session event set edition",
     "session_event_title": "Session event \"%eventName%\"",
     "session_events": "Session events",
     "session_events_details": "Session events details",

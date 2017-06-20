@@ -288,6 +288,7 @@
     "session_event_registration_request": "Demande d'inscription à la séance \"%event_name%\" du %event_start_date% [%status%]",
     "session_event_registration_success_msg": "Bonjour,<br><br>\nVous avez bien été inscrit(e) à la séance \"%event_name%\" du %event_start_date%.\n",
     "session_event_self_registration_message": "Êtes-vous sûr de vouloir vous inscrire à cette séance ?",
+    "session_event_set_edition": "Modification du groupe de séances",
     "session_event_title": "Séance \"%eventName%\"",
     "session_events": "Séances",
     "session_events_details": "Détails des séances",

@@ -30,7 +30,8 @@ class EventFormModal  extends Component {
       location: props.event.location ? props.event.location.id : undefined,
       locationExtra: props.event.locationExtra ? props.event.locationExtra : undefined,
       teachers: props.event.tutors ? props.event.tutors.map(t => t.id) : [],
-      isAgendaEvent: props.event.type === 1
+      isAgendaEvent: props.event.type === 1,
+      eventSet: props.event.eventSet ? props.event.eventSet.name : undefined,
     }
   }
 
@@ -45,7 +46,7 @@ class EventFormModal  extends Component {
         this.setState({description: value})
         break
       case 'registrationType':
-        this.setState({registrationType: value})
+        this.setState({registrationType: parseInt(value)})
         break
       case 'maxUsers':
         this.setState({maxUsers: value})
@@ -72,6 +73,9 @@ class EventFormModal  extends Component {
         break
       case 'isAgendaEvent':
         this.setState({isAgendaEvent: value})
+        break
+      case 'eventSet':
+        this.setState({eventSet: value})
         break
     }
   }
@@ -294,6 +298,20 @@ class EventFormModal  extends Component {
             </div>
           </div>
 
+          {this.state.registrationType === 2 &&
+            <div className="form-group row">
+              <label className="control-label col-md-3">
+                {t('group')}
+              </label>
+              <div className="col-md-9">
+                <input type="text"
+                       className="form-control"
+                       value={this.state.eventSet}
+                       onChange={e => this.updateEventProps('eventSet', e.target.value)}
+                />
+              </div>
+            </div>
+          }
           <div className="form-group row">
             <label className="control-label col-md-3">
               {trans('show_in_agenda', {}, 'cursus')}
