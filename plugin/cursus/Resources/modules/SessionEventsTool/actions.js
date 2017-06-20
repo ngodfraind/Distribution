@@ -30,6 +30,8 @@ export const LOCATIONS_LOAD = 'LOCATIONS_LOAD'
 export const LOCATIONS_LOADED_UPDATE = 'LOCATIONS_LOADED_UPDATE'
 export const TEACHERS_LOAD = 'TEACHERS_LOAD'
 export const TEACHERS_LOADED_UPDATE = 'TEACHERS_LOADED_UPDATE'
+export const SET_EVENTS_RESET = 'SET_EVENTS_RESET'
+export const SET_EVENTS_LOAD = 'SET_EVENTS_LOAD'
 
 export const actions = {}
 
@@ -496,6 +498,20 @@ actions.deleteEventSet = (eventSetId) => ({
   }
 })
 
+actions.getSetEvents = (sessionEventSetId) => (dispatch) => {
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_cursus_session_event_set_events_retrieve', {sessionEventSet: sessionEventSetId}),
+      request: {
+        method: 'GET'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.loadSetEvents(JSON.parse(data)))
+      }
+    }
+  })
+}
+
 actions.resetCurrentSessionEvent = makeActionCreator(CURRENT_EVENT_RESET)
 
 actions.addParticipants = makeActionCreator(CURRENT_EVENT_ADD_PARTICIPANTS, 'sessionEventUsers')
@@ -531,5 +547,9 @@ actions.updateLocationsLoaded = makeActionCreator(LOCATIONS_LOADED_UPDATE, 'load
 actions.loadTeachers = makeActionCreator(TEACHERS_LOAD, 'teachers')
 
 actions.updateTeachersLoaded = makeActionCreator(TEACHERS_LOADED_UPDATE, 'loaded')
+
+actions.resetSetEvents = makeActionCreator(SET_EVENTS_RESET)
+
+actions.loadSetEvents = makeActionCreator(SET_EVENTS_LOAD, 'events')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

@@ -1,6 +1,7 @@
 /*global UserPicker*/
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
+import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
 import {actions} from '../actions'
@@ -157,11 +158,11 @@ class EventView extends Component {
               <div className="panel-body">
                 <b>{t('duration')} :</b>
                 &nbsp;
-                {this.props.event['startDate']}
+                {moment(this.props.event['startDate']).format('DD/MM/YYYY HH:mm')}
                 &nbsp;
                 <i className="fa fa-long-arrow-right"></i>
                 &nbsp;
-                {this.props.event['endDate']}
+                {moment(this.props.event['endDate']).format('DD/MM/YYYY HH:mm')}
                 <br/>
                 <b>{trans('max_users', {} ,'cursus')} :</b>
                 &nbsp;

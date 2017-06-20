@@ -1,5 +1,6 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
+import moment from 'moment'
 import Modal from 'react-bootstrap/lib/Modal'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {t, trans} from '#/main/core/translation'
@@ -79,11 +80,11 @@ class EventCommentsModal  extends Component {
               <div className="panel-body">
                 <h3>{this.props.event['name']}</h3>
                 <div>
-                  {this.props.event['startDate']}
+                  {moment(this.props.event['startDate']).format('DD/MM/YYYY HH:mm')}
                   &nbsp;
                   <i className="fa fa-long-arrow-right"></i>
                   &nbsp;
-                  {this.props.event['endDate']}
+                  {moment(this.props.event['endDate']).format('DD/MM/YYYY HH:mm')}
                 </div>
                 {(this.props.event['location'] || this.props.event['locationExtra']) &&
                   <hr/>
@@ -92,7 +93,7 @@ class EventCommentsModal  extends Component {
                   <div>
                     {this.props.event['location']['name']}
                     <br/>
-                    {this.props.event['location']['street'] }, {this.props.event['location']['street_number'] }
+                    {this.props.event['location']['street']}, {this.props.event['location']['street_number']}
                     {this.props.event['location']['box_number'] &&
                       <span> / {this.props.event['location']['box_number']}</span>
                     }

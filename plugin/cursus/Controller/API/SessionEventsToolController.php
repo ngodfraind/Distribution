@@ -582,6 +582,26 @@ class SessionEventsToolController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/workspace/cursus/session/event/set/{sessionEventSet}/events/retrieve",
+     *     name="claro_cursus_session_event_set_events_retrieve",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventSetEventRetrieveAction(SessionEventSet $sessionEventSet)
+    {
+        $this->checkToolAccess($sessionEventSet->getSession()->getWorkspace(), 'open');
+        $events = $sessionEventSet->getEvents();
+        $serializedEvents = $this->serializer->serialize(
+            $events,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedEvents, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/workspace/cursus/session/event/set/{sessionEventSet}/delete",
      *     name="claro_cursus_session_event_set_delete",
      *     options = {"expose"=true}

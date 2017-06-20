@@ -25,7 +25,9 @@ import {
   LOCATIONS_LOAD,
   LOCATIONS_LOADED_UPDATE,
   TEACHERS_LOAD,
-  TEACHERS_LOADED_UPDATE
+  TEACHERS_LOADED_UPDATE,
+  SET_EVENTS_RESET,
+  SET_EVENTS_LOAD
 } from './actions'
 
 const initialState = {
@@ -55,7 +57,8 @@ const initialState = {
   locations: [],
   locationsLoaded: false,
   teachers: [],
-  teachersLoaded: false
+  teachersLoaded: false,
+  setEvents: []
 }
 
 const mainReducers = {}
@@ -214,6 +217,11 @@ const teachersLoadedReducers = {
   [TEACHERS_LOADED_UPDATE]: (state, action) => action.loaded
 }
 
+const setEventsReducers = {
+  [SET_EVENTS_RESET]: () => initialState['setEvents'],
+  [SET_EVENTS_LOAD]: (state, action) => action.events
+}
+
 export const reducers = combineReducers({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
@@ -229,6 +237,7 @@ export const reducers = combineReducers({
   locationsLoaded: makeReducer(initialState['locationsLoaded'], locationsLoadedReducers),
   teachers: makeReducer(initialState['teachers'], teachersReducers),
   teachersLoaded: makeReducer(initialState['teachersLoaded'], teachersLoadedReducers),
+  setEvents: makeReducer(initialState['setEvents'], setEventsReducers),
   list: makeListReducer(),
   pagination: paginationReducer
 })

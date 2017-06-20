@@ -1,5 +1,6 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
+import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'
@@ -166,8 +167,18 @@ class ManagerView extends Component {
                 label: t('name'),
                 renderer: (rowData) => <a href={`#event/${rowData.id}`}>{rowData.name}</a>
               },
-              {name: 'startDate', type: 'date', label: t('start_date')},
-              {name: 'endDate', type: 'date', label: t('end_date')},
+              {
+                name: 'startDate',
+                type: 'date',
+                label: t('start_date'),
+                renderer: (rowData) => moment(rowData.startDate).format('DD/MM/YYYY HH:mm')
+              },
+              {
+                name: 'endDate',
+                type: 'date',
+                label: t('end_date'),
+                renderer: (rowData) => moment(rowData.endDate).format('DD/MM/YYYY HH:mm')
+              },
               {name: 'maxUsers', type: 'number', label: trans('max_users', {}, 'cursus')},
               {
                 name: 'registrationType',
