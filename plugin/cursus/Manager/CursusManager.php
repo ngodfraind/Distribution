@@ -2288,9 +2288,11 @@ class CursusManager
             if (isset($data['icon'])) {
                 $course->setIcon($data['icon']);
             }
+
             foreach ($organizations as $organization) {
                 $course->addOrganization($organization);
             }
+
             $this->om->persist($course);
 
             if ($withIndex) {
