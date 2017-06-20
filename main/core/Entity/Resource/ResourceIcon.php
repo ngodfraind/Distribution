@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Resource;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,20 +21,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ResourceIcon
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column()
-     * @ORM\Column(nullable=true)
-     */
-    protected $uuid;
 
     /**
      * @ORM\Column()
@@ -110,15 +105,5 @@ class ResourceIcon
     public function getRelativeUrl()
     {
         return $this->relativeUrl;
-    }
-
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    public function getUuid()
-    {
-        return $this->uuid;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Icap\BadgeBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Rule\Rulable;
@@ -33,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Badge extends Rulable
 {
     use SoftDeleteableEntity;
+    use UuidTrait;
 
     const EXPIRE_PERIOD_DAY = 0;
     const EXPIRE_PERIOD_DAY_LABEL = 'day';
@@ -52,11 +54,6 @@ class Badge extends Rulable
      * @Expose
      */
     protected $id;
-
-    /**
-     * @ORM\Column()
-     */
-    protected $uuid;
 
     /**
      * @var int
@@ -806,16 +803,6 @@ class Badge extends Rulable
         }
 
         return $restriction;
-    }
-
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-    }
-
-    public function getUuid()
-    {
-        return $this->uuid;
     }
 
     public function __clone()

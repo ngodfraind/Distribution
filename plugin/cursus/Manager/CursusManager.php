@@ -376,7 +376,7 @@ class CursusManager
             $icon = $this->saveIcon($icon, $course);
             $course->setIcon($icon);
         }
-        
+
         $course->setUserValidation($userValidation);
         $course->setOrganizationValidation($organizationValidation);
         $course->setDefaultSessionDuration($defaultSessionDuration);
