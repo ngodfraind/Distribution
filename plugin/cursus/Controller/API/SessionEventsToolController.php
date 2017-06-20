@@ -571,13 +571,13 @@ class SessionEventsToolController extends Controller
             $sessionEventSet->setLimit($limit);
         }
         $this->cursusManager->persistSessionEventSet($sessionEventSet);
-        $serializedSessionEventSet = $this->serializer->serialize(
+        $serializedSet = $this->serializer->serialize(
             $sessionEventSet,
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );
 
-        return new JsonResponse($serializedSessionEventSet, 200);
+        return new JsonResponse($serializedSet, 200);
     }
 
     /**

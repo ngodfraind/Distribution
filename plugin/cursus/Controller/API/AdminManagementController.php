@@ -1992,8 +1992,8 @@ class AdminManagementController extends Controller
         $datas['sessionDefaultDuration'] = $this->configHandler->hasParameter('cursus_session_default_duration') ?
             $this->configHandler->getParameter('cursus_session_default_duration') :
             1;
-        $datas['displayUserEventsInDesktopAgenda'] = $this->configHandler->hasParameter('display_user_events_in_desktop_agenda') ?
-            $this->configHandler->getParameter('display_user_events_in_desktop_agenda') :
+        $datas['displayUserEventsInDesktopAgenda'] = $this->configHandler->hasParameter('cursus_display_user_events_in_desktop_agenda') ?
+            $this->configHandler->getParameter('cursus_display_user_events_in_desktop_agenda') :
             false;
 
         return new JsonResponse($datas, 200);
@@ -2024,7 +2024,7 @@ class AdminManagementController extends Controller
         $this->configHandler->setParameter('cursus_enable_ws_in_courses_profile_tab', $parameters['enableWsInCoursesProfileTab']);
         $this->configHandler->setParameter('cursus_session_default_total', $parameters['sessionDefaultTotal']);
         $this->configHandler->setParameter('cursus_session_default_duration', $parameters['sessionDefaultDuration']);
-        $this->configHandler->setParameter('display_user_events_in_desktop_agenda', $parameters['displayUserEventsInDesktopAgenda']);
+        $this->configHandler->setParameter('cursus_display_user_events_in_desktop_agenda', $parameters['displayUserEventsInDesktopAgenda']);
 
         return new JsonResponse($parameters, 200);
     }

@@ -5267,6 +5267,11 @@ class CursusManager
         return $this->sessionEventRepo->findSessionEventsByWorkspace($workspace);
     }
 
+    public function getSessionEventsByUser(User $user)
+    {
+        return $this->sessionEventRepo->findSessionEventsByUser($user);
+    }
+
     /*************************************************
      * Access to CourseSessionUserRepository methods *
      *************************************************/

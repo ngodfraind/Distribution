@@ -16,11 +16,13 @@ use Claroline\AgendaBundle\Entity\EventInvitation;
 use Claroline\AgendaBundle\Form\EventInvitationType;
 use Claroline\AgendaBundle\Form\ImportAgendaType;
 use Claroline\AgendaBundle\Manager\AgendaManager;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -40,15 +42,17 @@ class DesktopAgendaController extends Controller
     private $translator;
     private $agendaManager;
     private $router;
+    private $eventDispatcher;
 
     /**
      * @DI\InjectParams({
-     *     "tokenStorage"       = @DI\Inject("security.token_storage"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
-     *     "request"            = @DI\Inject("request"),
-     *     "translator"         = @DI\Inject("translator"),
-     *     "agendaManager"      = @DI\Inject("claroline.manager.agenda_manager"),
-     *     "router"             = @DI\Inject("router")
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "request"         = @DI\Inject("request"),
+     *     "translator"      = @DI\Inject("translator"),
+     *     "agendaManager"   = @DI\Inject("claroline.manager.agenda_manager"),
+     *     "router"          = @DI\Inject("router"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
      * })
      */
     public function __construct(
@@ -57,7 +61,8 @@ class DesktopAgendaController extends Controller
         Request $request,
         TranslatorInterface $translator,
         AgendaManager $agendaManager,
-        RouterInterface $router
+        RouterInterface $router,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->om = $om;
@@ -65,6 +70,7 @@ class DesktopAgendaController extends Controller
         $this->translator = $translator;
         $this->agendaManager = $agendaManager;
         $this->router = $router;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -76,7 +82,15 @@ class DesktopAgendaController extends Controller
      */
     public function desktopShowAction()
     {
-        $data = $this->agendaManager->desktopEvents($this->tokenStorage->getToken()->getUser());
+        $user = $this->tokenStorage->getToken()->getUser();
+        $events = $this->agendaManager->desktopEvents($user);
+        $options = [
+            'type' => 'desktop',
+            'user' => $user,
+        ];
+        $genericEvent = $this->eventDispatcher->dispatch('claroline_external_agenda_events', new GenericDataEvent($options));
+        $externalEvents = $genericEvent->getResponse();
+        $data = array_merge($events, $externalEvents);
 
         return new JsonResponse($data);
     }
