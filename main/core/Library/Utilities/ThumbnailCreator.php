@@ -30,17 +30,15 @@ class ThumbnailCreator
     private $ut;
     private $fs;
     private $fileUtilities;
-    private $fu;
 
     /**
      * @DI\InjectParams({
      *     "kernelRootDir"      = @DI\Inject("%kernel.root_dir%"),
      *     "thumbnailDirectory" = @DI\Inject("%claroline.param.thumbnails_directory%"),
-     *     "ut"                 = @DI\Inject("claroline.utilities.misc"),
-     *     "fileUtilities"      = @DI\Inject("claroline.utilities.file")
+     *     "ut"                 = @DI\Inject("claroline.utilities.misc")
      * })
      */
-    public function __construct($kernelRootDir, $thumbnailDirectory, ClaroUtilities $ut, FileUtilities $fileUtilities)
+    public function __construct($kernelRootDir, $thumbnailDirectory, ClaroUtilities $ut)
     {
         $ds = DIRECTORY_SEPARATOR;
         $this->webDir = "{$kernelRootDir}{$ds}..{$ds}web";
@@ -49,7 +47,6 @@ class ThumbnailCreator
         $this->isFfmpegLoaded = extension_loaded('ffmpeg');
         $this->ut = $ut;
         $this->fs = new FileSystem();
-        $this->fu = $fileUtilities;
     }
 
     /**
@@ -83,6 +80,7 @@ class ThumbnailCreator
         if ($frame) {
             $image = $frame->toGDImage();
             $this->resize($newWidth, $newHeight, $image, $destinationPath);
+            var_dump($destinationPath);
 
             return $destinationPath;
         }

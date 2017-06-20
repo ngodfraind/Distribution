@@ -116,9 +116,8 @@ class IconManager
                 $workspace
             );
 
-            $thumbnailPath = $this->webdir.$ds.$publicFile->getUrl();
-
-            if ($thumbnailPath !== null) {
+            if ($publicFile) {
+                $thumbnailPath = $this->webdir.$ds.$publicFile->getUrl();
                 $relativeUrl = str_replace($this->webdir, '', $thumbnailPath);
                 $icon = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
                 $icon->setMimeType('custom');
@@ -264,8 +263,8 @@ class IconManager
             try {
                 $thumbnailPath = $this->creator->fromVideo($filePath, $newPath, 100, 100);
             } catch (\Exception $e) {
+                //ffmpege extension might be missing
                 $thumbnailPath = null;
-                //error handling ? $thumbnailPath = null
             }
         }
 
@@ -278,7 +277,9 @@ class IconManager
             }
         }
 
-        return $this->fu->createFile(new File($newPath));
+        if ($thumbnailPath) {
+            return $this->fu->createFile(new File($thumbnailPath));
+        }
     }
 
     /**
