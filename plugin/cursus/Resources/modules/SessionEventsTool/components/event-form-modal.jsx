@@ -31,7 +31,7 @@ class EventFormModal  extends Component {
       locationExtra: props.event.locationExtra ? props.event.locationExtra : undefined,
       teachers: props.event.tutors ? props.event.tutors.map(t => t.id) : [],
       isAgendaEvent: props.event.type === 1,
-      eventSet: props.event.eventSet ? props.event.eventSet.name : undefined,
+      eventSet: props.event.eventSet ? props.event.eventSet.name : undefined
     }
   }
 
@@ -349,7 +349,8 @@ EventFormModal.propTypes = {
     location: T.object,
     locationExtra: T.string,
     tutors: T.array,
-    type: T.number
+    type: T.number,
+    eventSet: T.object
   }).isRequired,
   mode: T.string.isRequired,
   session: T.object,
