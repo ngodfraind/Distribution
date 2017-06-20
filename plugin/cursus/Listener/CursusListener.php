@@ -176,7 +176,6 @@ class CursusListener
         if ($type === 'workspace') {
             $workspace = $data['workspace'];
             $sessionEvents = $this->cursusManager->getSessionEventsByWorkspace($workspace);
-
         } elseif ($type === 'desktop') {
             $user = $data['user'];
             $sessionEvents = $this->configHandler->getParameter('cursus_display_user_events_in_desktop_agenda') ?
@@ -192,32 +191,32 @@ class CursusListener
 
             if ($location || $locationExtra) {
                 $description .= $description ?
-                    '<hr/><b>' . $this->translator->trans('location', [], 'platform') . '</b><br/>' :
+                    '<hr/><b>'.$this->translator->trans('location', [], 'platform').'</b><br/>' :
                     '';
                 if ($location) {
-                    $description .= '<div>' .
-                        $location->getName() .
-                        '<br/>' .
-                        $location->getStreet() . ', ' . $location->getStreetNumber();
-                    $description .= $location->getBoxNumber() ? '/' . $location->getBoxNumber() : '';
-                    $description .= '<br/>' .
-                        $location->getPc() . ' ' . $location->getTown() .
-                        '<br/>' .
+                    $description .= '<div>'.
+                        $location->getName().
+                        '<br/>'.
+                        $location->getStreet().', '.$location->getStreetNumber();
+                    $description .= $location->getBoxNumber() ? '/'.$location->getBoxNumber() : '';
+                    $description .= '<br/>'.
+                        $location->getPc().' '.$location->getTown().
+                        '<br/>'.
                         $location->getCountry();
-                    $description .= $location->getPhone() ? '<br/>' . $location->getPhone() : '';
+                    $description .= $location->getPhone() ? '<br/>'.$location->getPhone() : '';
                     $description .= '</div>';
                 }
                 $description .= $locationExtra ? $locationExtra : '';
             }
             if (count($teachers) > 0) {
                 $description .= $description ? '<hr/>' : '';
-                $description .= '<b>' . $this->translator->trans('tutors', [], 'cursus') . '</b>' .
-                    '<br/>' .
+                $description .= '<b>'.$this->translator->trans('tutors', [], 'cursus').'</b>'.
+                    '<br/>'.
                     '<ul>';
 
                 foreach ($teachers as $teacher) {
-                    $description .= '<li>' .
-                        $teacher->getFirstName() . ' ' . $teacher->getLastName() .
+                    $description .= '<li>'.
+                        $teacher->getFirstName().' '.$teacher->getLastName().
                         '</li>';
                 }
                 $description .= '</ul>';
@@ -234,7 +233,7 @@ class CursusListener
                 'isEditable' => false,
                 'workspace_id' => $sessionWorkspace ? $sessionWorkspace->getId() : null,
                 'workspace_name' => $sessionWorkspace ? $sessionWorkspace->getName() : null,
-                'className' => 'pointer-hand session_event_' . $sessionEvent->getId(),
+                'className' => 'pointer-hand session_event_'.$sessionEvent->getId(),
                 'durationEditable' => false,
             ];
         }
