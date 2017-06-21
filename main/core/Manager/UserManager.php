@@ -1145,7 +1145,7 @@ class UserManager
         if ($user->getPictureFile()) {
             $file = $user->getPictureFile();
             $publicFile = $this->fu->createFile($file, $file->getBasename());
-            $fileUse = $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+            $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
             //../.. for legacy compatibility
             $user->setPicture('../../'.$publicFile->getUrl());
             $this->objectManager->persist($user);
@@ -1372,7 +1372,7 @@ class UserManager
                 $file = new File($element->getPathName());
 
                 $publicFile = $this->fu->createFile($file, $file->getBasename());
-                $fileUse = $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+                $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
                 //../.. for legacy compatibility
                 $user->setPicture('../../'.$publicFile->getUrl());
                 $this->objectManager->persist($user);

@@ -67,7 +67,7 @@ class LogoService
     public function createLogo(File $file)
     {
         $publicFile = $this->fu->createFile($file, $file->getBasename(), null, null, null, self::PUBLIC_FILE_TYPE);
-        $fileUsage = $this->fu->createFileUse($publicFile, 'none', 'none');
+        $this->fu->createFileUse($publicFile, 'none', 'none');
     }
 
     /**

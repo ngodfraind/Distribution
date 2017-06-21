@@ -469,24 +469,6 @@ class IconManager
         ];
     }
 
-    private function isDirectoryEmpty($dirName)
-    {
-        $files = [];
-        $dirHandle = opendir($dirName);
-
-        if ($dirHandle) {
-            while ($file = readdir($dirHandle)) {
-                if ($file !== '.' && $file !== '..') {
-                    $files[] = $file;
-                    break;
-                }
-            }
-            closedir($dirHandle);
-        }
-
-        return count($files) === 0;
-    }
-
     private function createShortcutFromRelativeUrl($url, $workspace = null)
     {
         $ds = DIRECTORY_SEPARATOR;

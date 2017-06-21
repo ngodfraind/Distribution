@@ -157,11 +157,9 @@ class BadgeHandler
 
     private function handleUpload(UploadedFile $file = null, Badge $badge)
     {
-        $ds = DIRECTORY_SEPARATOR;
-
         if ($file) {
             $publicFile = $this->fu->createFile($file, $file->getBasename());
-            $fileUse = $this->fu->createFileUse($publicFile, 'Icap\BadgeBundle\Entity\Badge', $badge->getUuid());
+            $this->fu->createFileUse($publicFile, 'Icap\BadgeBundle\Entity\Badge', $badge->getUuid());
             $badge->setImagePath($publicFile->getUrl());
         }
     }

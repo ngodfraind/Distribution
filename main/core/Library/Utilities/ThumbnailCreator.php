@@ -80,7 +80,6 @@ class ThumbnailCreator
         if ($frame) {
             $image = $frame->toGDImage();
             $this->resize($newWidth, $newHeight, $image, $destinationPath);
-            var_dump($destinationPath);
 
             return $destinationPath;
         }

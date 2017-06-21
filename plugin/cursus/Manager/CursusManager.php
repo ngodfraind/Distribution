@@ -1875,7 +1875,7 @@ class CursusManager
         }
 
         $publicFile = $this->fu->createFile($tmpFile, $tmpFile->getBasename());
-        $fileUse = $this->fu->createFileUse($publicFile, get_class($object), $object->getUuid());
+        $this->fu->createFileUse($publicFile, get_class($object), $object->getUuid());
 
         return '../../'.$publicFile->getUrl();
     }

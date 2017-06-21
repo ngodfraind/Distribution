@@ -121,12 +121,12 @@ class AdministrationController extends Controller
             if ($this->get('icap_badge.form_handler.badge')->handleAdd($badge)) {
                 $sessionFlashBag->add('success', $translator->trans('badge_add_success_message', [], 'icap_badge'));
 
-                //return $this->redirect($this->generateUrl('icap_badge_admin_badges'));
+                return $this->redirect($this->generateUrl('icap_badge_admin_badges'));
             }
         } catch (\Exception $exception) {
             $sessionFlashBag->add('error', $translator->trans('badge_add_error_message', [], 'icap_badge'));
 
-            //return $this->redirect($this->generateUrl('icap_badge_admin_badges'));
+            return $this->redirect($this->generateUrl('icap_badge_admin_badges'));
         }
 
         return [

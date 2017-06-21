@@ -204,7 +204,6 @@ class AdminManagementController extends Controller
         $this->cursusManager->checkCursusAccess($user, $parent);
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $worskpace = null;
-        $icon = null;
 
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
@@ -405,7 +404,6 @@ class AdminManagementController extends Controller
         $courseDatas = $this->request->request->get('courseDatas', false);
         $worskpace = null;
         $worskpaceModel = null;
-        $icon = null;
         $publicRegistration = is_bool($courseDatas['publicRegistration']) ?
             $courseDatas['publicRegistration'] :
             $courseDatas['publicRegistration'] === 'true';
@@ -478,7 +476,6 @@ class AdminManagementController extends Controller
         $courseDatas = $this->request->request->get('courseDatas', false);
         $worskpace = null;
         $worskpaceModel = null;
-        $icon = null;
         $publicRegistration = is_bool($courseDatas['publicRegistration']) ?
             $courseDatas['publicRegistration'] :
             $courseDatas['publicRegistration'] === 'true';
