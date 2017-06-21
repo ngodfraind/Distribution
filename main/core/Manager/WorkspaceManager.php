@@ -1394,7 +1394,7 @@ class WorkspaceManager
         foreach ($rights as $right) {
             $role = $right->getRole();
             $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().
-                '...' . $copy->getId() . ' - ' .$role->getId());
+                '...'.$copy->getId().' - '.$role->getId());
             $key = $role->getTranslationKey();
             $newRight = new ResourceRights();
             $newRight->setResourceNode($copy);
