@@ -19,11 +19,6 @@ if [ "${CURRENT_COMMIT}" = "${LAST_COMMIT}" ]; then
   exit 0
 fi
 
-# create a dedicated branch for the update
-if [ ! -z "$BRANCH_NAME" ]; then
-  git checkout -b "update-${BRANCH_NAME}-${CURRENT_COMMIT}"
-fi
-
 # create the VERSION.txt file
 {              
 echo $FULL_VERSION
